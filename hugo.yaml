@@ -1,0 +1,81 @@
+baseURL: https://mayalucia.github.io/affordances-research/
+languageCode: en-us
+title: Affordances, Bodies, and Information
+description: A research portal — closed-form information-theoretic accounts of affordance theory, with live executable JAX panels.
+
+# Build settings
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: false
+
+# Markup — org-mode is source-of-truth where possible; markdown supported
+markup:
+  defaultMarkdownHandler: goldmark
+  goldmark:
+    renderer:
+      unsafe: true  # required for Pyodide HTML embeds in code-execute shortcode
+  highlight:
+    style: github
+    lineNos: false
+    codeFences: true
+    guessSyntax: true
+
+# Output formats
+outputs:
+  home: [HTML, RSS]
+  section: [HTML, RSS]
+  page: [HTML]
+
+# Minification
+minify:
+  disableXML: true
+  minifyOutput: true
+
+# Pagination
+pagination:
+  pagerSize: 20
+
+# Menu — section-based navigation per portal site-map
+menu:
+  main:
+    - identifier: theory
+      name: Theory
+      url: /theory/
+      weight: 10
+    - identifier: code
+      name: Code
+      url: /code/
+      weight: 20
+    - identifier: method
+      name: Method
+      url: /method/
+      weight: 30
+    - identifier: reading
+      name: Reading
+      url: /reading/
+      weight: 40
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 50
+
+# Params — site-wide custom values
+params:
+  status: portal v1.0 in development
+  description: A demonstration of research competence — closed-form, runnable, honestly scoped.
+  pyodide_version: "0.26.4"  # pinned; bump deliberately
+  jax_version: "0.4.30"      # JAX-on-Pyodide pinned wheel; α plan
+  github_repo: "https://github.com/mayalucia/affordances-research"
+
+# Privacy — defaults
+privacy:
+  googleAnalytics:
+    disable: true
+  x:
+    enableDNT: true
+  vimeo:
+    enableDNT: true
+  youtube:
+    privacyEnhanced: true

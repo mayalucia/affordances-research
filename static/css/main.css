@@ -1,0 +1,249 @@
+/* affordances-research — minimal, reading-first stylesheet */
+
+:root {
+    --text: #1a1a1a;
+    --text-soft: #555;
+    --bg: #fdfdfa;
+    --accent: #355070;
+    --accent-soft: #6d597a;
+    --code-bg: #f4f1ec;
+    --border: #e0ddd5;
+    --width: 720px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 17px;
+}
+
+body {
+    margin: 0;
+    color: var(--text);
+    background: var(--bg);
+    font-family: Georgia, "Iowan Old Style", Garamond, serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: var(--width);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+/* Header */
+.site-header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+    margin-bottom: 2.5rem;
+}
+
+.site-header .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.site-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+
+.site-header nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.site-header nav a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.site-header nav a:hover,
+.site-header nav a.active {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+}
+
+/* Main content */
+main {
+    padding-bottom: 4rem;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Iowan Old Style", Georgia, serif;
+    line-height: 1.25;
+    color: var(--text);
+    margin-top: 2.25rem;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 1.95rem;
+    margin-top: 0.5rem;
+}
+
+h2 {
+    font-size: 1.45rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.4rem;
+}
+
+h3 {
+    font-size: 1.15rem;
+}
+
+p, ul, ol, blockquote {
+    margin: 1rem 0;
+}
+
+ul, ol {
+    padding-left: 1.5rem;
+}
+
+li {
+    margin-bottom: 0.35rem;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+a:hover {
+    color: var(--accent-soft);
+}
+
+p.lead {
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: 1.05rem;
+}
+
+blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 1rem;
+    color: var(--text-soft);
+    font-style: italic;
+}
+
+/* Code */
+code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9rem;
+    background: var(--code-bg);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+}
+
+pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    line-height: 1.5;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+}
+
+th, td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+th {
+    border-bottom: 2px solid var(--text);
+    font-weight: 700;
+}
+
+/* Lists pages */
+ul.pages {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.pages li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+ul.pages a {
+    font-weight: 600;
+}
+
+ul.pages .desc {
+    color: var(--text-soft);
+    font-weight: 400;
+}
+
+/* Footer */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 4rem;
+    color: var(--text-soft);
+    font-size: 0.85rem;
+}
+
+.site-footer p {
+    margin: 0.25rem 0;
+}
+
+/* Code-execute placeholder (Phase B will populate) */
+.code-execute {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    overflow: hidden;
+}
+
+.code-execute-source {
+    background: var(--code-bg);
+    padding: 1rem;
+}
+
+.code-execute-controls {
+    background: #fff;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.code-execute-output {
+    padding: 1rem;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    min-height: 2rem;
+}

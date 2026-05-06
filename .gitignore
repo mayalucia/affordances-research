@@ -1,0 +1,29 @@
+# Hugo build output
+public/
+resources/
+.hugo_build.lock
+
+# Local lab + transcripts
+.lab/
+.attic/
+.transcripts/
+.agent-shell/
+
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Python (for tangled panels)
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+
+# Claude Code rendered artefact
+/CLAUDE.md
+!.guardian/CLAUDE.md
