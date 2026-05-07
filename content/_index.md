@@ -44,9 +44,9 @@ The portal makes four things visible at once:
 
 `{{< param "status" >}}`
 
-This portal is in active development for a Mioara Vasile touchpoint
-on **2026-05-15**. The state on that date is portal v1.0. Phase 1.5
-panel and full coalition walkthrough land in v1.1+.
+This portal is in active development for an external review
+touchpoint on **2026-05-15**. The state on that date is portal v1.0.
+Phase 1.5 panel and full coalition walkthrough land in v1.1+.
 
 ## How to read
 

@@ -8,13 +8,12 @@ description: "Annotated bibliography. Every entry cite-or-strike checked."
 
 References for the work, in three classes:
 
-- **Foundational** — Gibson, Warren, Turvey. The affordance theory
-  primary literature.
-- **Adjacent** — Friston, Tishby, Pitkow, Lengyel. Information-
-  theoretic and free-energy work that touches the same questions
-  from different angles.
-- **Recent** — Schrimpf, Marin-Vargas. Brain-score and primate-hand
-  recordings; the contemporary literature we read directly.
+- **Foundational** — the affordance-theory primary literature
+  (ecological psychology, direct perception, dynamical accounts).
+- **Adjacent** — information-theoretic and free-energy work that
+  touches the same questions from different angles.
+- **Recent** — contemporary brain-score and primate motor-cortex
+  literature read directly for the panels.
 
 Each entry comes with two sentences:
 

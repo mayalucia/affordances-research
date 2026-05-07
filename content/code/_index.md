@@ -45,8 +45,8 @@ makes the failure mode visible.
 
 - **panel-0** — Phase 1 closed-form curve. The body-derivative as a
   function of body parameter, three ways. *Live.*
-- **panel-1** — Phase 1.5 Warren-grounded. Gates on Mioara primate
-  hand data ingestion. *Post-May-15.*
+- **panel-1** — Phase 1.5 Warren-grounded. Gates on primate hand
+  data ingestion. *Post-May-15.*
 - **panel-2** — Position-C contrast. Sign-change vs invariance under
   property-environment swap. *Live.*
 

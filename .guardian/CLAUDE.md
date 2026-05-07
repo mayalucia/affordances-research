@@ -21,7 +21,7 @@ project at `collab/sessions/wp-0128-affordance-sabha/` and
 `workpacks/0128-portal-disposition-amendment.org`. This portal does
 not duplicate that substrate; it curates a public surface from it.
 
-The portal is bound to a 2026-05-15 Mioara verification touchpoint.
+The portal is bound to a 2026-05-15 external-review touchpoint.
 What ships on that date is portal v1.0. Phase 1.5 panel and full
 coalition walkthrough land in v1.1+.
 
@@ -53,11 +53,11 @@ When in doubt about scope, ask before committing.
 | Section                  | Substantive author         |
 |--------------------------+----------------------------|
 | theory/phase-1           | themis                     |
-| theory/phase-1.5         | carya (gates on Mioara)    |
+| theory/phase-1.5         | carya (gates on review)    |
 | theory/phase-2           | themis                     |
 | theory/lemma             | hodgkin                    |
 | code/panel-0             | themis + spanda            |
-| code/panel-1             | spanda (gates on Mioara)   |
+| code/panel-1             | spanda (gates on review)   |
 | code/panel-2             | themis + spanda            |
 | method/three-phases      | gaddi                      |
 | method/disciplines       | gaddi                      |

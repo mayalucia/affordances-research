@@ -15,7 +15,7 @@ discipline that ships with the work.
 
 ## Status
 
-Portal v1.0 in development for a Mioara Vasile touchpoint on
+Portal v1.0 in development for an external-review touchpoint on
 2026-05-15.
 
 ## Develop
