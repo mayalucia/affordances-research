@@ -79,23 +79,19 @@ sign is the substantive content of the curve. If the closed-form
 delivered the opposite sign, or zero, the falsifiability test in
 [Theory / Phase 1](/theory/phase-1/) would fire.
 
-## Run it
+## Run it in your browser
 
-In your browser, when [Phase C](#phase-c) goes live:
+The button below downloads Pyodide, installs autograd via
+`micropip`, and runs the verification triangle live. First run is
+slow (~10 MB cold cache); subsequent runs are cached.
 
-```python
-from panel_0 import make_generative_covariances, panel_sweep, verification_residual
-import numpy as np
+{{< panel-0-live >}}
 
-gen = make_generative_covariances(seed=0)
-sweep = panel_sweep(np.linspace(0.05, 6.0, 121), gen, include_autodiff=True)
-res = verification_residual(sweep)
-print(f"ana vs fd       = {res['ana_vs_fd']:.3e}")
-print(f"ana vs autodiff = {res['ana_vs_autodiff']:.3e}")
-print(f"max             = {res['max']:.3e}")
-```
+The Python source executed by the button is the same as
+[`panel_0.py`]({{< param "github_repo" >}}/blob/main/static/figures/panel-0/panel_0.py),
+minus the matplotlib renderer.
 
-Native, today:
+## Run it natively
 
 ```bash
 git clone https://github.com/mayalucia/affordances-research.git
@@ -123,25 +119,13 @@ in the repository.
 The closed-form derivation provenance trails are listed in
 [Theory / Phase 1](/theory/phase-1/).
 
-## Phase C — in-browser execution
-
-Native, the verification triangle is closed: analytical, FD, and
-autodiff (autograd-HIPS) all agree. Phase C lifts this into the
-browser via Pyodide. The verification criterion is unchanged:
-
-  `max(|analytical − autodiff|, |analytical − fd|) < 1e-5`
-
-across the same grid. If autodiff disagrees with the closed form
-in-browser, the closed form is wrong, the autograd trace is broken,
-or Pyodide's float64 path differs from native NumPy. Showing the
-triangle live makes the failure mode visible to any reader.
-
-### Why autograd, not JAX
+## Why autograd, not JAX
 
 The original α-plan named `jax.jacrev` for the in-browser autodiff
 leg. JAX-on-Pyodide does not exist as of 2026-05:
 [pyodide#2198](https://github.com/pyodide/pyodide/issues/2198) is
-open, last substantive activity June 2022, no maintained fork.
+open, last substantive activity June 2022, no maintained fork or
+community wheel.
 
 [autograd-HIPS](https://github.com/HIPS/autograd) is the spiritual
 ancestor of JAX — pure-Python, NumPy-compatible reverse-mode autodiff
@@ -151,6 +135,16 @@ it is NumPy-compatible, the change to `panel_0.py` is local: a single
 parallel `_mutual_information_anp` function that uses `autograd.numpy`
 in place of `numpy`, and `autograd.grad` in place of `jax.jacrev`.
 The analytical and finite-difference legs continue to use plain
-`numpy` and `scipy`, so the three legs remain independent.
+`numpy` and `scipy`, so the three legs remain independent
+verifications.
+
+The verification criterion is unchanged:
+
+  `max(|analytical − autodiff|, |analytical − fd|) < 1e-5`
+
+across the same grid. If autodiff disagrees with the closed form
+in-browser, the closed form is wrong, the autograd trace is broken,
+or Pyodide's float64 path differs from native NumPy. Showing the
+triangle live, in your own browser, makes that failure mode visible.
 
 This substitution is named, not glossed.

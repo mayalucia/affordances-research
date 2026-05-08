@@ -1,0 +1,161 @@
+{{/*
+  panel-0-live.html — in-browser execution of the panel-0 verification
+  triangle via Pyodide + micropip + autograd.
+
+  Activation is gated on a button click so that pages do not silently
+  download Pyodide (~10 MB) on every visit. After click:
+
+    1. load Pyodide from CDN (pinned to .Site.Params.pyodide_version)
+    2. micropip.install autograd (.Site.Params.autograd_version)
+    3. exec the panel-0 logic embedded as a Python string below
+    4. print pairwise residuals to the output area
+*/}}
+{{ $pyodide_version := .Site.Params.pyodide_version }}
+{{ $autograd_version := .Site.Params.autograd_version }}
+
+<div class="panel-0-live" style="border:1px solid #ddd; padding:1em; margin:1.5em 0; background:#fafafa;">
+  <p>
+    <button id="panel-0-run" style="padding:0.4em 0.8em; cursor:pointer;">
+      Run the verification triangle in your browser
+    </button>
+    <span id="panel-0-status" style="margin-left:0.6em; color:#666; font-size:0.9em;"></span>
+  </p>
+  <pre id="panel-0-output" style="background:#fff; padding:0.8em; border:1px solid #eee; min-height:8em; font-size:0.85em; overflow-x:auto;">click the button above to load Pyodide + autograd and run.</pre>
+  <p style="font-size:0.8em; color:#666; margin-top:0.4em;">
+    First run downloads Pyodide ({{ $pyodide_version }}) plus autograd
+    ({{ $autograd_version }}) wheels — total ~10 MB. Subsequent runs
+    are cached. The Python source is identical to
+    <a href="{{ .Site.Params.github_repo }}/blob/main/static/figures/panel-0/panel_0.py"><code>panel_0.py</code></a>,
+    minus the matplotlib renderer (browser run prints residuals only).
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v{{ $pyodide_version }}/full/pyodide.js"></script>
+<script>
+(function() {
+  const btn = document.getElementById('panel-0-run');
+  const status = document.getElementById('panel-0-status');
+  const out = document.getElementById('panel-0-output');
+  let pyodide = null;
+
+  const PANEL_0_PY = String.raw`
+import numpy as np
+import autograd.numpy as anp
+from autograd import grad
+from numpy.linalg import slogdet
+from scipy.linalg import solve
+
+def body_matrix(theta_B, dim_a=4):
+    k = np.arange(1, dim_a + 1, dtype=float)
+    return np.diag(1.0 - np.exp(-theta_B / k))
+
+def body_jacobian(theta_B, dim_a=4):
+    k = np.arange(1, dim_a + 1, dtype=float)
+    return np.diag((1.0 / k) * np.exp(-theta_B / k))
+
+def make_gen(seed=0):
+    rng = np.random.default_rng(seed)
+    def psd(d, s):
+        L = rng.standard_normal((d, d))
+        return s * (L @ L.T) + np.eye(d) * 1e-2
+    Sigma_S = psd(4, 1.0)
+    M_aS = rng.standard_normal((4, 4)) * 0.5
+    Sigma_xi = psd(4, 0.3)
+    Sigma_a = M_aS @ Sigma_S @ M_aS.T + Sigma_xi
+    Sigma_eta = psd(4, 0.05)
+    return {"Sigma_a": Sigma_a, "Sigma_a_given_S": Sigma_xi, "Sigma_eta": Sigma_eta}
+
+def Sigma_A(t, g):
+    B = body_matrix(t)
+    return B @ g["Sigma_a"] @ B.T + g["Sigma_eta"]
+
+def Sigma_A_given_S(t, g):
+    B = body_matrix(t)
+    return B @ g["Sigma_a_given_S"] @ B.T + g["Sigma_eta"]
+
+def I_B(t, g):
+    _, la = slogdet(Sigma_A(t, g))
+    _, lb = slogdet(Sigma_A_given_S(t, g))
+    return 0.5 * (la - lb)
+
+def dI_analytical(t, g):
+    B = body_matrix(t); dB = body_jacobian(t)
+    SA = Sigma_A(t, g); SAS = Sigma_A_given_S(t, g)
+    dSA = dB @ g["Sigma_a"] @ B.T + B @ g["Sigma_a"] @ dB.T
+    dSAS = dB @ g["Sigma_a_given_S"] @ B.T + B @ g["Sigma_a_given_S"] @ dB.T
+    return 0.5 * (np.trace(solve(SA, dSA, assume_a="pos")) - np.trace(solve(SAS, dSAS, assume_a="pos")))
+
+def dI_fd(t, g):
+    eps = 1e-5 * max(abs(t), 1.0)
+    return (I_B(t + eps, g) - I_B(t - eps, g)) / (2.0 * eps)
+
+def _body_anp(t, dim_a=4):
+    k = anp.arange(1, dim_a + 1, dtype=float)
+    return anp.diag(1.0 - anp.exp(-t / k))
+
+def _I_anp(t, g):
+    B = _body_anp(t)
+    SA = B @ g["Sigma_a"] @ B.T + g["Sigma_eta"]
+    SAS = B @ g["Sigma_a_given_S"] @ B.T + g["Sigma_eta"]
+    _, la = anp.linalg.slogdet(SA)
+    _, lb = anp.linalg.slogdet(SAS)
+    return 0.5 * (la - lb)
+
+def dI_autodiff(t, g):
+    return float(grad(_I_anp, argnum=0)(float(t), g))
+
+g = make_gen(seed=0)
+grid = np.linspace(0.05, 6.0, 121)
+ana = np.array([dI_analytical(float(t), g) for t in grid])
+fd = np.array([dI_fd(float(t), g) for t in grid])
+ad = np.array([dI_autodiff(float(t), g) for t in grid])
+res_fd = float(np.max(np.abs(ana - fd)))
+res_ad = float(np.max(np.abs(ana - ad)))
+res_max = max(res_fd, res_ad)
+verdict = "PASS" if res_max < 1e-5 else "FAIL"
+
+print(f"three-verification residuals across {grid.size} grid points (in-browser):")
+print(f"  analytical vs finite-difference : {res_fd:.3e}")
+print(f"  analytical vs autodiff (autograd): {res_ad:.3e}")
+print(f"  max pairwise                    : {res_max:.3e}")
+print(f"pass threshold: 1e-05    verdict: {verdict}")
+`;
+
+  function log(s) {
+    out.textContent = (out.textContent === out.dataset.placeholder ? "" : out.textContent) + s + "\n";
+  }
+  out.dataset.placeholder = out.textContent;
+
+  async function run() {
+    btn.disabled = true;
+    out.textContent = "";
+    try {
+      if (!pyodide) {
+        status.textContent = "loading Pyodide…";
+        pyodide = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v{{ $pyodide_version }}/full/"
+        });
+        status.textContent = "loading numpy + scipy…";
+        await pyodide.loadPackage(["numpy", "scipy", "micropip"]);
+        status.textContent = "installing autograd via micropip…";
+        await pyodide.runPythonAsync(`
+import micropip
+await micropip.install("autograd=={{ $autograd_version }}")
+`);
+      }
+      status.textContent = "running…";
+      pyodide.setStdout({ batched: log });
+      pyodide.setStderr({ batched: log });
+      await pyodide.runPythonAsync(PANEL_0_PY);
+      status.textContent = "done.";
+    } catch (e) {
+      log("error: " + e.message);
+      status.textContent = "failed.";
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', run);
+})();
+</script>
