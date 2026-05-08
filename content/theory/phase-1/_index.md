@@ -135,7 +135,8 @@ sign-equality envelope.
 ## See also
 
 - [Code / Panel 0](/code/panel-0/) — the parametric curve and the
-  three-verification triangle (γ leg ships analytical and
-  finite-difference; α leg ships autodiff in Phase C).
+  three-verification triangle (analytical, finite-difference, and
+  autograd-HIPS reverse-mode autodiff agree natively; Phase C lifts
+  all three into the browser via Pyodide + micropip).
 - [Theory / Lemma](/theory/lemma/) — the methods §1.5 type-match
   lemma in canonical sentence form (named-pending: coordinate fill).

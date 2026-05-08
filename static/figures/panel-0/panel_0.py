@@ -4,6 +4,7 @@
 #   "numpy>=1.26",
 #   "scipy>=1.12",
 #   "matplotlib>=3.8",
+#   "autograd>=1.6",
 # ]
 # ///
 """
@@ -19,10 +20,18 @@ as a function of theta_B, alongside its body-derivative
   dI/d(theta_B) = 1/2 tr[Sigma_A^-1 . dSigma_A]
                 - 1/2 tr[Sigma_{A|S;B}^-1 . dSigma_{A|S;B}]
 
-both computed in closed form (analytical) and verified by
-finite-difference. The autodiff leg is shown-but-deferred to
-Phase C (panel_0_jax.py); the gamma-plan ships analytical +
-finite-difference live in-browser.
+computed three independent ways and verified to agree:
+
+  1. analytical    — closed-form trace identity, scipy.linalg.solve
+  2. finite-diff   — central difference of I_B(S;A)
+  3. autodiff      — autograd reverse-mode on mutual_information
+
+Phase C substitution: the original alpha-plan named jax.jacrev for the
+autodiff leg, but JAX-on-Pyodide does not exist as of 2026-05
+(pyodide#2198 dormant since June 2022). autograd-HIPS is the
+NumPy-compatible reverse-mode ancestor of JAX, pure-Python, and
+installable in Pyodide via micropip. The verification triangle
+remains intact; only the autodiff library changes.
 
 Formula provenance: carya R2.6 ask (i), substrate-canonical at
 collab/sessions/wp-0128-affordance-sabha/carya.org L1209+.
@@ -35,6 +44,8 @@ Discipline foreclosures (per r3-synthesis Section 6.1):
 """
 
 import numpy as np
+import autograd.numpy as anp
+from autograd import grad
 from numpy.typing import NDArray
 from numpy.linalg import slogdet
 from scipy.linalg import solve
@@ -201,40 +212,112 @@ def body_derivative_finite_difference(
 
 
 # -------------------------------------------------------------------
+# Autodiff leg — autograd-HIPS reverse-mode (Phase C alpha-plan)
+# -------------------------------------------------------------------
+#
+# These functions parallel the numpy-only routines above but route
+# all array ops through autograd.numpy (anp) so reverse-mode tracing
+# can build the gradient graph through I_B(S;A) as a function of the
+# scalar theta_B. The analytical and FD legs above remain pure
+# numpy+scipy, so the three legs are independent verifications.
+
+def _body_matrix_anp(theta_B, dim_a: int = 4):
+    """autograd-traced version of body_matrix."""
+    k = anp.arange(1, dim_a + 1, dtype=float)
+    d = 1.0 - anp.exp(-theta_B / k)
+    return anp.diag(d)
+
+
+def _mutual_information_anp(theta_B, gen: dict[str, NDArray]) -> float:
+    """autograd-traced I_B(S;A) at scalar theta_B.
+
+    The generative covariances Sigma_a, Sigma_{a|S}, Sigma_eta are
+    designed (theta_B-independent) and pulled in as constants; only
+    B(theta_B) is traced.
+    """
+    dim_a = gen["Sigma_a"].shape[0]
+    B = _body_matrix_anp(theta_B, dim_a=dim_a)
+    SA = B @ gen["Sigma_a"] @ B.T + gen["Sigma_eta"]
+    SAS = B @ gen["Sigma_a_given_S"] @ B.T + gen["Sigma_eta"]
+    # autograd defines slogdet on PSD inputs; use it for parity with
+    # the closed-form route. Sign is +1 here (designed PSD).
+    _, ldet_a = anp.linalg.slogdet(SA)
+    _, ldet_b = anp.linalg.slogdet(SAS)
+    return 0.5 * (ldet_a - ldet_b)
+
+
+def body_derivative_autodiff(theta_B: float, gen: dict[str, NDArray]) -> float:
+    """Reverse-mode autodiff verification of dI/d(theta_B).
+
+    Implementation: autograd.grad on _mutual_information_anp w.r.t.
+    its first (scalar) argument. autograd-HIPS is the pure-Python
+    NumPy-compatible reverse-mode ancestor of JAX; substituted for
+    jax.jacrev because JAX-on-Pyodide does not exist as of 2026-05
+    (pyodide#2198 dormant since June 2022). The verification
+    triangle is intact; only the autodiff library has changed.
+    """
+    g = grad(_mutual_information_anp, argnum=0)
+    return float(g(float(theta_B), gen))
+
+
+# -------------------------------------------------------------------
 # Fibred sweep: the panel curve
 # -------------------------------------------------------------------
 
 def panel_sweep(
     theta_grid: NDArray,
     gen: dict[str, NDArray],
+    include_autodiff: bool = True,
 ) -> dict[str, NDArray]:
-    """Compute (I, dI/dtheta analytical, dI/dtheta finite-difference)
+    """Compute (I, dI/dtheta x {analytical, finite-difference, autodiff})
     over a grid of theta_B values.
 
-    Returns three arrays of length len(theta_grid). Pass criterion
-    (carya R2.6 ask (ii)): max |analytical - fd| < tau, tau = 1e-6
-    in single-precision-defensive units; relaxed to 1e-5 in
-    in-browser float64 builds.
+    Returns four arrays of length len(theta_grid) when include_autodiff
+    is True, three otherwise. Pass criterion (carya R2.6 ask (ii)):
+    max(|ana - fd|, |ana - autodiff|) < tau, tau = 1e-6 in
+    single-precision-defensive units; relaxed to 1e-5 in in-browser
+    float64 builds.
     """
     n = theta_grid.shape[0]
     I_vals = np.empty(n)
     dI_ana = np.empty(n)
     dI_fd = np.empty(n)
+    dI_ad = np.empty(n) if include_autodiff else None
     for k, t in enumerate(theta_grid):
         I_vals[k] = mutual_information(float(t), gen)
         dI_ana[k] = body_derivative_analytical(float(t), gen)
         dI_fd[k] = body_derivative_finite_difference(float(t), gen)
-    return {
+        if include_autodiff:
+            dI_ad[k] = body_derivative_autodiff(float(t), gen)
+    out = {
         "theta": theta_grid,
         "I": I_vals,
         "dI_analytical": dI_ana,
         "dI_finite_difference": dI_fd,
     }
+    if include_autodiff:
+        out["dI_autodiff"] = dI_ad
+    return out
 
 
-def verification_residual(sweep: dict[str, NDArray]) -> float:
-    """max |analytical - finite-difference| across the grid."""
-    return float(np.max(np.abs(sweep["dI_analytical"] - sweep["dI_finite_difference"])))
+def verification_residual(sweep: dict[str, NDArray]) -> dict[str, float]:
+    """Pairwise max-residuals across the grid.
+
+    Returns a dict with keys 'ana_vs_fd', 'ana_vs_autodiff' (if
+    autodiff present), and 'max' (the worst pairwise residual). The
+    'max' value is the headline three-verification figure.
+    """
+    res = {
+        "ana_vs_fd": float(np.max(np.abs(
+            sweep["dI_analytical"] - sweep["dI_finite_difference"]
+        ))),
+    }
+    if "dI_autodiff" in sweep:
+        res["ana_vs_autodiff"] = float(np.max(np.abs(
+            sweep["dI_analytical"] - sweep["dI_autodiff"]
+        )))
+    res["max"] = max(res.values())
+    return res
 
 
 # -------------------------------------------------------------------
@@ -242,19 +325,22 @@ def verification_residual(sweep: dict[str, NDArray]) -> float:
 # -------------------------------------------------------------------
 
 def main() -> None:
-    """Native run via `uv run python panel_0.py`. Renders panel-0.png."""
+    """Native run via `uv run --script panel_0.py`. Renders panel-0.png."""
     import matplotlib
     matplotlib.use("Agg")  # headless; works in browser-tangled run too.
     import matplotlib.pyplot as plt
 
     gen = make_generative_covariances(dim_S=4, dim_a=4, seed=0)
     theta_grid = np.linspace(0.05, 6.0, 121)
-    sweep = panel_sweep(theta_grid, gen)
+    sweep = panel_sweep(theta_grid, gen, include_autodiff=True)
 
-    residual = verification_residual(sweep)
+    res = verification_residual(sweep)
     pass_threshold = 1e-5
-    verdict = "PASS" if residual < pass_threshold else "FAIL"
-    print(f"three-verification residual (analytical vs FD): {residual:.3e}")
+    verdict = "PASS" if res["max"] < pass_threshold else "FAIL"
+    print(f"three-verification residuals across {theta_grid.size} grid points:")
+    print(f"  analytical vs finite-difference : {res['ana_vs_fd']:.3e}")
+    print(f"  analytical vs autodiff (autograd): {res['ana_vs_autodiff']:.3e}")
+    print(f"  max pairwise                    : {res['max']:.3e}")
     print(f"pass threshold: {pass_threshold:.0e}    verdict: {verdict}")
 
     fig, (ax_top, ax_bot) = plt.subplots(2, 1, figsize=(7.0, 5.6), sharex=True)
@@ -273,6 +359,12 @@ def main() -> None:
         color="#c44536", lw=0, marker="x", ms=3.5, mew=0.8,
         label="finite-difference",
     )
+    ax_bot.plot(
+        sweep["theta"], sweep["dI_autodiff"],
+        color="#2a9d8f", lw=0, marker="o", ms=3.0,
+        markerfacecolor="none", markeredgecolor="#2a9d8f",
+        label="autodiff (autograd-HIPS)",
+    )
     ax_bot.axhline(0.0, color="#888", lw=0.6)
     ax_bot.set_xlabel(r"$\theta_B$ (designed body parameter)")
     ax_bot.set_ylabel(r"$\partial I_B(S; A) / \partial \theta_B$")
@@ -280,7 +372,7 @@ def main() -> None:
     ax_bot.legend(loc="upper right", framealpha=0.9)
 
     fig.suptitle(
-        "Panel 0 — body-derivative, three-verification triangle (γ leg)",
+        "Panel 0 — body-derivative, three-verification triangle",
         y=0.99,
     )
     fig.tight_layout()

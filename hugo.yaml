@@ -1,7 +1,7 @@
 baseURL: https://mayalucia.github.io/affordances-research/
 languageCode: en-us
 title: Affordances, Bodies, and Information
-description: A research portal — closed-form information-theoretic accounts of affordance theory, with live executable JAX panels.
+description: A research portal — closed-form information-theoretic accounts of affordance theory, with live executable in-browser panels (Pyodide + autograd).
 
 # Build settings
 enableRobotsTXT: true
@@ -65,8 +65,11 @@ menu:
 params:
   status: portal v1.0 in development
   description: A demonstration of research competence — closed-form, runnable, honestly scoped.
-  pyodide_version: "0.26.4"  # pinned; bump deliberately
-  jax_version: "0.4.30"      # JAX-on-Pyodide pinned wheel; α plan
+  pyodide_version: "0.26.4"   # pinned; bump deliberately
+  autograd_version: "1.6.2"   # autograd-HIPS via micropip; pure-Python.
+                              # Substitutes for JAX in the α-plan because
+                              # JAX-on-Pyodide does not exist as of 2026-05
+                              # (pyodide#2198 dormant since June 2022).
   github_repo: "https://github.com/mayalucia/affordances-research"
   math: true                  # enable KaTeX site-wide
 

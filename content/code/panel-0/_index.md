@@ -16,25 +16,37 @@ Two stacked traces:
 - **Top** — the parametric mutual information
   {{< raw >}}\(I_B(S; A) = \tfrac{1}{2}\log\det \Sigma_A(\theta_B) - \tfrac{1}{2}\log\det \Sigma_{A|S;B}(\theta_B)\){{< /raw >}}
   as θ_B sweeps from 0.05 to 6.0.
-- **Bottom** — its body-derivative computed two ways: closed-form
-  analytical (curve) versus central-difference numerical (markers).
+- **Bottom** — its body-derivative computed three independent ways:
+  closed-form analytical (curve), central-difference numerical
+  (red × markers), and reverse-mode autodiff via autograd-HIPS
+  (teal ○ markers).
 
-The two legs of the verification triangle agree to floating-point
-precision (residual ≈ 10⁻⁸, well below the 10⁻⁵ pass threshold)
-across all 121 grid points.
+All three legs of the verification triangle agree well below the
+10⁻⁵ pass threshold across all 121 grid points:
 
-The third leg — autodiff via `jax.jacrev` — is part of the design
-but ships in [Phase C](#phase-c) when the JAX-on-Pyodide pipeline
-goes live. The Phase B (γ-plan) panel ships analytical and
-finite-difference live.
+- analytical vs finite-difference: residual ≈ 1.4 × 10⁻⁸
+  (limited by central-difference truncation error)
+- analytical vs autodiff: residual ≈ 5.8 × 10⁻¹⁵
+  (machine precision; reverse-mode is exact up to floating-point)
+
+The autodiff leg uses **autograd-HIPS**, not JAX. The original
+α-plan named `jax.jacrev`, but JAX-on-Pyodide does not exist as
+of 2026-05 ([pyodide#2198](https://github.com/pyodide/pyodide/issues/2198)
+has been dormant since June 2022). autograd is the NumPy-compatible
+reverse-mode ancestor of JAX, pure-Python, installable in Pyodide
+via `micropip`. The verification triangle is intact; only the
+autodiff library has been substituted. The substitution is named
+in [`/about/`](/about/).
 
 ## The figure
 
 ![Panel 0 — body-derivative, three-verification triangle](/figures/panel-0/panel-0.png)
 
-*Verdict, last build:* `analytical vs FD residual = 1.412e-08`, pass
-threshold `1e-05`, status `PASS`. The build script reports the
-residual on stdout and refuses to render if it exceeds threshold.
+*Verdict, last build:* `analytical vs FD = 1.412e-08`,
+`analytical vs autodiff = 5.773e-15`, max pairwise residual
+`1.412e-08`, pass threshold `1e-05`, status `PASS`. The build
+script reports all three pairwise residuals on stdout and refuses
+to render if the max exceeds threshold.
 
 ## What the figure does and does not claim
 
@@ -76,8 +88,11 @@ from panel_0 import make_generative_covariances, panel_sweep, verification_resid
 import numpy as np
 
 gen = make_generative_covariances(seed=0)
-sweep = panel_sweep(np.linspace(0.05, 6.0, 121), gen)
-print(f"residual = {verification_residual(sweep):.3e}")
+sweep = panel_sweep(np.linspace(0.05, 6.0, 121), gen, include_autodiff=True)
+res = verification_residual(sweep)
+print(f"ana vs fd       = {res['ana_vs_fd']:.3e}")
+print(f"ana vs autodiff = {res['ana_vs_autodiff']:.3e}")
+print(f"max             = {res['max']:.3e}")
 ```
 
 Native, today:
@@ -87,11 +102,15 @@ git clone https://github.com/mayalucia/affordances-research.git
 cd affordances-research/static/figures/panel-0
 uv run --script panel_0.py
 # wrote panel-0.png
-# three-verification residual (analytical vs FD): 1.412e-08
+# three-verification residuals across 121 grid points:
+#   analytical vs finite-difference : 1.412e-08
+#   analytical vs autodiff (autograd): 5.773e-15
+#   max pairwise                    : 1.412e-08
+# pass threshold: 1e-05    verdict: PASS
 ```
 
 `uv run --script` reads the PEP 723 inline header and provisions a
-clean environment with numpy, scipy, matplotlib. No
+clean environment with numpy, scipy, matplotlib, autograd. No
 `requirements.txt`, no `pyproject.toml`.
 
 ## The source
@@ -104,14 +123,34 @@ in the repository.
 The closed-form derivation provenance trails are listed in
 [Theory / Phase 1](/theory/phase-1/).
 
-## Phase C
+## Phase C — in-browser execution
 
-The autodiff leg lands when the JAX-on-Pyodide pipeline ships. The
-expected verification triangle at that point is
+Native, the verification triangle is closed: analytical, FD, and
+autodiff (autograd-HIPS) all agree. Phase C lifts this into the
+browser via Pyodide. The verification criterion is unchanged:
 
   `max(|analytical − autodiff|, |analytical − fd|) < 1e-5`
 
-across the same grid. If autodiff disagrees with the closed form,
-the closed form is wrong, the JAX trace is broken, or Pyodide's JAX
-build differs from native JAX. Showing the triangle makes the
-failure mode visible.
+across the same grid. If autodiff disagrees with the closed form
+in-browser, the closed form is wrong, the autograd trace is broken,
+or Pyodide's float64 path differs from native NumPy. Showing the
+triangle live makes the failure mode visible to any reader.
+
+### Why autograd, not JAX
+
+The original α-plan named `jax.jacrev` for the in-browser autodiff
+leg. JAX-on-Pyodide does not exist as of 2026-05:
+[pyodide#2198](https://github.com/pyodide/pyodide/issues/2198) is
+open, last substantive activity June 2022, no maintained fork.
+
+[autograd-HIPS](https://github.com/HIPS/autograd) is the spiritual
+ancestor of JAX — pure-Python, NumPy-compatible reverse-mode autodiff
+written by the same group that later built JAX. Because it is
+pure-Python, `micropip.install("autograd")` works in Pyodide. Because
+it is NumPy-compatible, the change to `panel_0.py` is local: a single
+parallel `_mutual_information_anp` function that uses `autograd.numpy`
+in place of `numpy`, and `autograd.grad` in place of `jax.jacrev`.
+The analytical and finite-difference legs continue to use plain
+`numpy` and `scipy`, so the three legs remain independent.
+
+This substitution is named, not glossed.
