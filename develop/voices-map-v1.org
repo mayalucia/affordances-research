@@ -1,0 +1,548 @@
+#+TITLE: Voices on Affordance — Playground Map v1
+#+AUTHOR: spanda@bravli (for mayadev's playgrounds/voices.html)
+#+DATE: 2026-05-19
+
+* Note to mayadev (delete on publish)
+
+This is the card source for =playgrounds/voices.html=. Each voice
+has four fields:
+
+- *the move* — one sentence: what this voice contributes that no
+  other voice does.
+- *the tension* — one sentence: who they disagree with / answer /
+  are answered by inside the same map.
+- *the source* — one bravli file path the curious reader can jump
+  into, deeper than the card.
+- *what SCENE inherits* — one sentence: picks up the question the
+  essay closes each section with.
+
+Scope decision: *all fourteen voices in v1*. Rationale in the
+reply message. Clusters are five, not the seven you guessed — see
+the cluster intros. The cluster /intros/ are optional scaffold
+text; tangle them or drop them, your call.
+
+Voice order within a cluster is the order the essay introduces
+them, which is also the order of intellectual debt (Gibson →
+Helmholtz is the founding pair; Marr → Jaynes → Friston is the
+normative ladder).
+
+The bravli substrate file is =codev/voices-on-affordance.org=
+(3541 lines). I cite line ranges in /the source/ so the curious
+reader lands inside the right section.
+
+* Map-level frame
+
+** The opening claim
+
+Fourteen voices are not fourteen theories of the same phenomenon.
+They are fourteen questions about the same phenomenon — and each
+question gets a different answer when asked of the same mouse, in
+the same arena, doing the same task.
+
+** What the map is for
+
+To stand on the floor of the workshop. To see who is leaning into
+whom. To find which voice answers your question (and which voice
+would answer it differently).
+
+** Cluster legend
+
+| Cluster                       | The question they share                 |
+|-------------------------------+-----------------------------------------|
+| Perception                    | What is perceived?                      |
+| Optimality                    | How well — and at what cost?            |
+| Inference                     | What problem is being solved?           |
+| Implementation depth          | How simply could it be computed?        |
+| Body, regulator, substrate    | Where is the affordance, really?        |
+
+* Cluster 1 — Perception
+:PROPERTIES:
+:CLUSTER:  perception
+:QUESTION: What is perceived?
+:END:
+
+The founding pair. Gibson says the world is already structured for
+action; the system resonates. Helmholtz says the world is
+underdetermined by the senses; the system infers. SCENE inherits
+Gibson's word /affordance/ and Helmholtz's tools /(latent
+representations, inverse problems, internal models)/. The tension
+between them is the intellectual engine of the entire programme.
+
+** Gibson
+:PROPERTIES:
+:VOICE:   gibson
+:CLUSTER: perception
+:END:
+
+*** the move
+The structure that makes action possible is /already/ in the optic
+array — no internal representation is needed to recover what the
+animal needs to do.
+
+*** the tension
+Helmholtz answers him directly: the optic array is ambiguous;
+inference is unavoidable. Friston later /unifies/ both readings
+(the resonance Gibson sees is the inference Helmholtz demands,
+running in active-inference form), but the unification is itself
+contested.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 31–100 (Gibson section);
+landmark text /Ecological Approach to Visual Perception/ (1979).
+
+*** what SCENE inherits
+The concept itself (affordance), the ecological validity demand
+(test with natural stimuli, in arenas, with bodies), and the
+insistence that perception is /for/ action.
+
+** Helmholtz
+:PROPERTIES:
+:VOICE:   helmholtz
+:CLUSTER: perception
+:END:
+
+*** the move
+Perception is /unconscious inference/ — the brain reconstructs
+distal causes from proximal effects using internal models.
+
+*** the tension
+Gibson denies the inference is necessary; Bialek shows the
+inference is information-theoretically near-optimal; Friston turns
+the inference into the unifying principle. Almost every later
+voice is some flavour of Helmholtz with extra constraints.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 101–205 (Helmholtz
+section); landmark text /Treatise on Physiological Optics/ (1867).
+
+*** what SCENE inherits
+The /computational framework/ — internal models, belief states,
+posterior over hidden causes — and with it the legitimacy of asking
+CEBRA-style questions about latent structure in neural recordings.
+
+* Cluster 2 — Optimality
+:PROPERTIES:
+:CLUSTER:  optimality
+:QUESTION: How well, and at what cost?
+:END:
+
+The /quantitative/ voices. Bialek measures how close to the
+physical limit the nervous system gets at extracting information;
+Shannon supplies the currency (mutual information) and the
+unbreakable bounds (channel capacity, rate-distortion); Sterling
+and Laughlin add the constraint that makes the question empirical
+— the nervous system pays for every bit in glucose and volume, so
+it cannot afford to compute everything, only the affordance-relevant
+things.
+
+** Bialek
+:PROPERTIES:
+:VOICE:   bialek
+:CLUSTER: optimality
+:END:
+
+*** the move
+The nervous system extracts information from sensory signals at or
+near the physical limits set by the noise — and we know this
+because we have measured it (fly photoreceptor, cricket cercal
+system, retinal ganglion cell).
+
+*** the tension
+Braitenberg suspects this is overkill — maybe a much simpler
+circuit would suffice for the actual behaviour. Sterling and
+Laughlin /agree/ that the system is optimal but insist the
+optimality is constrained by metabolic cost, not just by the
+physics of noise.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 206–345 (Bialek section);
+landmark text /Biophysics: Searching for Principles/ (2012).
+
+*** what SCENE inherits
+The quantitative benchmark: latent structure should carry mutual
+information with task variables /near/ the information-theoretic
+limit set by the input statistics — and this is testable.
+
+** Shannon
+:PROPERTIES:
+:VOICE:   shannon
+:CLUSTER: optimality
+:END:
+
+*** the move
+Communication has hard limits — channel capacity, rate-distortion,
+the data processing inequality — and the nervous system, whatever
+it is doing, is doing it inside those limits.
+
+*** the tension
+Shannon is the only voice who refuses to take sides between Gibson
+and Helmholtz: he asks /how many bits/, not /what the bits mean/.
+Braitenberg complements him from below (the simplest channel that
+suffices); Sterling–Laughlin extend him with /cost per bit/.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 469–682 (Shannon section);
+landmark text /A Mathematical Theory of Communication/ (1948).
+
+*** what SCENE inherits
+The /currency/ (mutual information), the /bounds/ (capacity,
+rate-distortion), and the discipline of the data processing
+inequality — compression can only lose, never create.
+
+** Sterling–Laughlin
+:PROPERTIES:
+:VOICE:   sterling-laughlin
+:CLUSTER: optimality
+:END:
+
+*** the move
+The nervous system is an /engineering design/ under joint energy
+and volume constraints — its architecture reflects what it can
+afford to invest in, not what it could in principle compute.
+
+*** the tension
+Friston unifies them in free-energy minimisation (cost is part of
+the principle); Bialek says optimality alone is the constraint;
+Marder warns that the "design" looks more like a population of
+homeostatically-stabilised solutions than a clean engineered point.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 683–870 (Sterling–Laughlin
+section); landmark text /Principles of Neural Design/ (2015).
+
+*** what SCENE inherits
+The /budget constraint/ — the prediction that the nervous system
+invests in affordance-relevant features and economises on
+everything else, and the empirical test of which dimensions of
+latent structure track what the system has actually paid for.
+
+* Cluster 3 — Inference
+:PROPERTIES:
+:CLUSTER:  inference
+:QUESTION: What problem is being solved?
+:END:
+
+The /normative/ voices. Marr insists you specify the computational
+theory before asking how. Jaynes specifies what /counts/ as
+inference (probability theory, the maximum-entropy prior, the
+posterior-plus-loss-equals-action discipline). Friston offers the
+single principle that unifies perception, action, and learning
+under a single variational objective — and pays for the unification
+in falsifiability.
+
+** Marr
+:PROPERTIES:
+:VOICE:   marr
+:CLUSTER: inference
+:END:
+
+*** the move
+Three levels of analysis — computational, algorithmic,
+implementational — and you /must/ specify the first before the
+others make sense.
+
+*** the tension
+Gibson sits at the computational level; Helmholtz at the
+algorithmic; Bialek at the implementational. Marr is therefore the
+voice who says /the other voices are all answering different
+questions/ — and refuses to let you confuse them.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 1351–1584 (Marr section);
+landmark text /Vision/ (1982).
+
+*** what SCENE inherits
+The /methodological discipline/: write down the computational
+theory of each affordance — what function is being computed? —
+before decoding neural data. Without it, CEBRA analysis is
+ungrounded correlation-hunting.
+
+** Jaynes
+:PROPERTIES:
+:VOICE:   jaynes
+:CLUSTER: inference
+:END:
+
+*** the move
+Probability /is/ the logic of inference (not a description of
+randomness in the world) — and the maximum-entropy prior, combined
+with a loss function, determines the optimal action uniquely.
+
+*** the tension
+Sterling–Laughlin says the organism cannot afford the optimal
+posterior; Friston converts Jaynes's inference into a /variational/
+inference; Marr puts Jaynes inside Level 1 as the normative
+computational theory.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 1118–1350 (Jaynes section);
+landmark text /Probability Theory: The Logic of Science/ (2003).
+
+*** what SCENE inherits
+The /decision-theoretic frame/: posterior + loss = optimal action,
+the demand that you specify the model /before/ inference, and
+(unexpectedly) the body-relative scaling of affordances as a
+consequence of transformation-group symmetry, not biological
+contingency.
+
+** Friston
+:PROPERTIES:
+:VOICE:   friston
+:CLUSTER: inference
+:END:
+
+*** the move
+A single variational principle — minimisation of free energy —
+unifies perception, action, learning, and policy selection in one
+mathematics: existence /is/ surprisal minimisation.
+
+*** the tension
+Gibson is /resolved into/ active inference (the resonance is
+prediction-error minimisation by acting); Bialek is /constrained by/
+free energy (the bound is information-theoretic); but Marder, Ashby,
+and Bernstein each say the unification is too tidy — actual
+biology has degeneracy, regulation, biomechanics that resist the
+single objective.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 871–1117 (Friston section);
+landmark text /A Free Energy Principle for the Brain/ (2006).
+
+*** what SCENE inherits
+The /action-perception symmetry/ (both are prediction-error
+minimisation), the language of policies and expected free energy,
+and the open question of whether the principle is empirically
+falsifiable in CEBRA-style experiments.
+
+* Cluster 4 — Implementation depth
+:PROPERTIES:
+:CLUSTER:  implementation
+:QUESTION: How simply could this be computed?
+:END:
+
+Two voices, one ladder. Braitenberg supplies the /null hypothesis/:
+show me the simplest wiring that produces the behaviour, before
+invoking representation. Bach supplies the /ceiling/: a stack of
+five levels (reactive → associative → predictive → constructive →
+reflective) that organises /what kind/ of computation a behaviour
+might require. Together they bracket the implementation-depth
+question.
+
+** Braitenberg
+:PROPERTIES:
+:VOICE:   braitenberg
+:CLUSTER: implementation
+:END:
+
+*** the move
+Many apparently-complex behaviours emerge from /very/ simple wiring
+— the right test of any "the brain represents X" claim is whether
+a Braitenberg vehicle with no representation of X also produces
+the behaviour.
+
+*** the tension
+Helmholtz, Friston, and Bach require representation; Braitenberg
+demands you show why a wire-and-threshold model fails before
+invoking a representation. Marder agrees with him in /spirit/ (do
+not over-interpret circuits) and with Helmholtz in /substance/ (the
+circuits are richer than they look).
+
+*** the source
+=codev/voices-on-affordance.org=, lines 346–468 (Braitenberg
+section); landmark text /Vehicles: Experiments in Synthetic
+Psychology/ (1984).
+
+*** what SCENE inherits
+The /null hypothesis discipline/: for every CEBRA latent dimension
+the team claims represents an affordance, propose the Braitenberg
+vehicle that would produce the same behaviour without that latent.
+
+** Bach
+:PROPERTIES:
+:VOICE:   bach
+:CLUSTER: implementation
+:END:
+
+*** the move
+Intelligence is /modelling/ — and the modelling can be stratified
+into a stack of computational depths (reactive, associative,
+predictive, constructive, reflective) that determines what the
+organism can do.
+
+*** the tension
+Braitenberg sits at the bottom of Bach's stack (reactive); Friston
+threads through it (predictive); Levin extends it sideways (the
+stack runs at non-neural scales). Marr would insist Bach has
+muddled levels of analysis with levels of mechanism.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 1811–2046 (Bach section);
+landmark text /Principles of Synthetic Intelligence/ (2009).
+
+*** what SCENE inherits
+The /modelling-stack taxonomy/ — which level (reactive, predictive,
+constructive) is the mouse operating at in each affordance task?
+— and the challenge of distinguishing interpolation within a known
+model from construction of a new one.
+
+* Cluster 5 — Body, regulator, substrate
+:PROPERTIES:
+:CLUSTER:  body
+:QUESTION: Where is the affordance, really?
+:END:
+
+The four voices who refuse to let the brain hog the explanation.
+Bernstein opens the body — biomechanics, synergies, degrees of
+freedom — and finds the affordance boundary partly inside it. Ashby
+says the whole apparatus exists to /regulate/ essential variables,
+and supplies the cybernetic constraints (requisite variety, good
+regulator theorem, ultrastability). Levin extends "agent" beyond
+organisms with nervous systems (cells, tissues, bioelectric
+networks). Marder warns that whatever elegant theory you build,
+the circuit implementing it will be different in every animal,
+will shift with internal state, and will drift over days.
+
+** Bernstein
+:PROPERTIES:
+:VOICE:   bernstein
+:CLUSTER: body
+:END:
+
+*** the move
+The body is /not/ a marionette — it is a dynamical system with its
+own physics, redundant degrees of freedom, and synergies the
+nervous system must exploit, not override.
+
+*** the tension
+Every other voice treats the body as a black box that "acts".
+Bernstein opens the box. Bach and Friston build internal models;
+Bernstein insists the most consequential internal model is of the
+/body itself/. Ashby agrees: the body /is/ part of the regulator.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 2047–2322 (Bernstein
+section); landmark text /On Dexterity and Its Development/ (1996).
+
+*** what SCENE inherits
+The /body half/ of the affordance equation — the prediction that
+the affordance boundary tracks the synergy manifold (not just
+visual features), and the demand that biomechanical state
+(fatigue, injury, load) appear in any model of affordance change.
+
+** Ashby
+:PROPERTIES:
+:VOICE:   ashby
+:CLUSTER: body
+:END:
+
+*** the move
+Living systems are /regulators/ of essential variables, and the
+law of requisite variety puts a hard mathematical limit on what
+any regulator can do.
+
+*** the tension
+Friston subsumes Ashby (free-energy minimisation /is/ regulation);
+Marr would put Ashby at Level 1 (the computational theory /is/
+regulation); Marder warns that the same regulation can be
+implemented by many degenerate circuits, so the apparent
+ultrastability /is/ already homeostatic.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 2323–2633 (Ashby section);
+landmark text /An Introduction to Cybernetics/ (1956).
+
+*** what SCENE inherits
+The /regulatory frame/ — essential variables, viability bounds,
+requisite variety as a dimensionality test, and the good regulator
+theorem (which says the system /must/ contain a model of what it
+regulates, whether anyone designed it to or not).
+
+** Levin
+:PROPERTIES:
+:VOICE:   levin
+:CLUSTER: body
+:END:
+
+*** the move
+Intelligence is /substrate-independent/ — goal-directed navigation
+of state space happens at cellular and tissue scales, not just
+neural — and the principles must be general enough to cover all of
+them.
+
+*** the tension
+Helmholtz, Friston, Marr, Bach all build their stories around
+neurons; Levin says the principles must be neuron-agnostic. Bernstein
+quietly agrees: the body's biomechanics are non-neural intelligence
+already. Marder agrees from below: even within a nervous system,
+the implementation is wildly degenerate.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 1585–1810 (Levin section);
+landmark text /Technological Approach to Mind Everywhere/ (2022).
+
+*** what SCENE inherits
+The /substrate-generality challenge/ — if the principles SCENE
+extracts from mice cannot, in principle, also describe a
+xenobot's affordances, the principles are too narrow; if they
+can, what does that say about what CEBRA latents actually mean?
+
+** Marder
+:PROPERTIES:
+:VOICE:   marder
+:CLUSTER: body
+:END:
+
+*** the move
+The same function is implemented by many circuits (/degeneracy/)
+and the same circuit implements many functions
+(/multifunctionality/) — so do /not/ average across animals or
+across days.
+
+*** the tension
+Bialek and Sterling–Laughlin assume the nervous system has /a/
+solution; Marder shows it has a population of solutions stabilised
+by homeostatic regulation. Marr would say the variability is in
+the algorithm/implementation, not the computation — Marder says
+sometimes the variability /is/ the computation.
+
+*** the source
+=codev/voices-on-affordance.org=, lines 2634–2910 (Marder
+section); landmark texts Prinz, Bucher & Marder (2004) and Marder
+& Goaillard (2006).
+
+*** what SCENE inherits
+The /individual-animal discipline/: do not collapse across mice;
+expect circuit drift across days; expect neuromodulatory
+state-dependence within a session — and the prediction that the
+affordance code itself is a moving target.
+
+* Notes left for the layout
+
+Things mayadev may want to surface visually that I have not built
+into the org file:
+
+- The *founding tension* (Gibson ↔ Helmholtz) is the spine of the
+  entire map. It might warrant a heavier line or a different
+  panel colour than the other cross-cluster tensions.
+- Friston is a /hub/. He appears in seven other voices' "tension"
+  fields. If you want a quick-visual cue of the unifier-vs-critic
+  topology, Friston is where the lines converge.
+- The "what SCENE inherits" field is the one that ties the map to
+  the *workpack*. If you want a "what does this mean for the
+  actual research" filter, that field is your hook.
+- Cluster 5 (body, regulator, substrate) is the longest essay
+  arc and the most recently composed. It might deserve a slightly
+  larger panel in the layout — or be left for a deliberate
+  end-of-page reveal.
+
+* Sources cited (single bravli substrate)
+
+| File                              | Role                          |
+|-----------------------------------+-------------------------------|
+| =codev/voices-on-affordance.org=  | The full essay, all 14 voices |
+
+The card-level pointers above use line ranges inside that single
+file. If a visitor clicks through, they land in the section the
+card summarises.
+
+— spanda@bravli, 2026-05-19
