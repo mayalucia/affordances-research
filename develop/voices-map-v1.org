@@ -5,16 +5,23 @@
 * Note to mayadev (delete on publish)
 
 This is the card source for =playgrounds/voices.html=. Each voice
-has four fields:
+has five fields:
 
 - *the move* — one sentence: what this voice contributes that no
   other voice does.
 - *the tension* — one sentence: who they disagree with / answer /
   are answered by inside the same map.
-- *the source* — one bravli file path the curious reader can jump
-  into, deeper than the card.
+- *the source* — one bravli file path + line range the curious
+  reader can jump into, deeper than the card.
+- *the landmark* — the single book or paper the source section is
+  built on (citation, not gloss).
 - *what SCENE inherits* — one sentence: picks up the question the
   essay closes each section with.
+
+The landmark field was promoted out of /the source/ on the v1.1
+substrate pass — landmarks are citation-grade and warrant their
+own slot. Single-edit point if a citation needs to shift (e.g.
+Friston 2006 → 2010 NRN review).
 
 Scope decision: *all fourteen voices in v1*. Rationale in the
 reply message. Clusters are five, not the seven you guessed — see
@@ -87,8 +94,10 @@ running in active-inference form), but the unification is itself
 contested.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 31–100 (Gibson section);
-landmark text /Ecological Approach to Visual Perception/ (1979).
+=codev/voices-on-affordance.org=, lines 31–100 (Gibson section).
+
+*** the landmark
+/Ecological Approach to Visual Perception/ (1979).
 
 *** what SCENE inherits
 The concept itself (affordance), the ecological validity demand
@@ -113,7 +122,10 @@ voice is some flavour of Helmholtz with extra constraints.
 
 *** the source
 =codev/voices-on-affordance.org=, lines 101–205 (Helmholtz
-section); landmark text /Treatise on Physiological Optics/ (1867).
+section).
+
+*** the landmark
+/Treatise on Physiological Optics/ (1867).
 
 *** what SCENE inherits
 The /computational framework/ — internal models, belief states,
@@ -155,8 +167,10 @@ optimality is constrained by metabolic cost, not just by the
 physics of noise.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 206–345 (Bialek section);
-landmark text /Biophysics: Searching for Principles/ (2012).
+=codev/voices-on-affordance.org=, lines 206–345 (Bialek section).
+
+*** the landmark
+/Biophysics: Searching for Principles/ (2012).
 
 *** what SCENE inherits
 The quantitative benchmark: latent structure should carry mutual
@@ -181,8 +195,10 @@ Braitenberg complements him from below (the simplest channel that
 suffices); Sterling–Laughlin extend him with /cost per bit/.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 469–682 (Shannon section);
-landmark text /A Mathematical Theory of Communication/ (1948).
+=codev/voices-on-affordance.org=, lines 469–682 (Shannon section).
+
+*** the landmark
+/A Mathematical Theory of Communication/ (1948).
 
 *** what SCENE inherits
 The /currency/ (mutual information), the /bounds/ (capacity,
@@ -208,7 +224,10 @@ homeostatically-stabilised solutions than a clean engineered point.
 
 *** the source
 =codev/voices-on-affordance.org=, lines 683–870 (Sterling–Laughlin
-section); landmark text /Principles of Neural Design/ (2015).
+section).
+
+*** the landmark
+/Principles of Neural Design/ (2015).
 
 *** what SCENE inherits
 The /budget constraint/ — the prediction that the nervous system
@@ -248,8 +267,10 @@ voice who says /the other voices are all answering different
 questions/ — and refuses to let you confuse them.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 1351–1584 (Marr section);
-landmark text /Vision/ (1982).
+=codev/voices-on-affordance.org=, lines 1351–1584 (Marr section).
+
+*** the landmark
+/Vision/ (1982).
 
 *** what SCENE inherits
 The /methodological discipline/: write down the computational
@@ -275,8 +296,10 @@ inference; Marr puts Jaynes inside Level 1 as the normative
 computational theory.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 1118–1350 (Jaynes section);
-landmark text /Probability Theory: The Logic of Science/ (2003).
+=codev/voices-on-affordance.org=, lines 1118–1350 (Jaynes section).
+
+*** the landmark
+/Probability Theory: The Logic of Science/ (2003).
 
 *** what SCENE inherits
 The /decision-theoretic frame/: posterior + loss = optimal action,
@@ -305,8 +328,10 @@ biology has degeneracy, regulation, biomechanics that resist the
 single objective.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 871–1117 (Friston section);
-landmark text /A Free Energy Principle for the Brain/ (2006).
+=codev/voices-on-affordance.org=, lines 871–1117 (Friston section).
+
+*** the landmark
+/A Free Energy Principle for the Brain/ (2006).
 
 *** what SCENE inherits
 The /action-perception symmetry/ (both are prediction-error
@@ -349,8 +374,10 @@ circuits are richer than they look).
 
 *** the source
 =codev/voices-on-affordance.org=, lines 346–468 (Braitenberg
-section); landmark text /Vehicles: Experiments in Synthetic
-Psychology/ (1984).
+section).
+
+*** the landmark
+/Vehicles: Experiments in Synthetic Psychology/ (1984).
 
 *** what SCENE inherits
 The /null hypothesis discipline/: for every CEBRA latent dimension
@@ -376,8 +403,10 @@ stack runs at non-neural scales). Marr would insist Bach has
 muddled levels of analysis with levels of mechanism.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 1811–2046 (Bach section);
-landmark text /Principles of Synthetic Intelligence/ (2009).
+=codev/voices-on-affordance.org=, lines 1811–2046 (Bach section).
+
+*** the landmark
+/Principles of Synthetic Intelligence/ (2009).
 
 *** what SCENE inherits
 The /modelling-stack taxonomy/ — which level (reactive, predictive,
@@ -421,7 +450,10 @@ Bernstein insists the most consequential internal model is of the
 
 *** the source
 =codev/voices-on-affordance.org=, lines 2047–2322 (Bernstein
-section); landmark text /On Dexterity and Its Development/ (1996).
+section).
+
+*** the landmark
+/On Dexterity and Its Development/ (1996).
 
 *** what SCENE inherits
 The /body half/ of the affordance equation — the prediction that
@@ -448,8 +480,10 @@ implemented by many degenerate circuits, so the apparent
 ultrastability /is/ already homeostatic.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 2323–2633 (Ashby section);
-landmark text /An Introduction to Cybernetics/ (1956).
+=codev/voices-on-affordance.org=, lines 2323–2633 (Ashby section).
+
+*** the landmark
+/An Introduction to Cybernetics/ (1956).
 
 *** what SCENE inherits
 The /regulatory frame/ — essential variables, viability bounds,
@@ -477,8 +511,10 @@ already. Marder agrees from below: even within a nervous system,
 the implementation is wildly degenerate.
 
 *** the source
-=codev/voices-on-affordance.org=, lines 1585–1810 (Levin section);
-landmark text /Technological Approach to Mind Everywhere/ (2022).
+=codev/voices-on-affordance.org=, lines 1585–1810 (Levin section).
+
+*** the landmark
+/Technological Approach to Mind Everywhere/ (2022).
 
 *** what SCENE inherits
 The /substrate-generality challenge/ — if the principles SCENE
@@ -507,8 +543,10 @@ sometimes the variability /is/ the computation.
 
 *** the source
 =codev/voices-on-affordance.org=, lines 2634–2910 (Marder
-section); landmark texts Prinz, Bucher & Marder (2004) and Marder
-& Goaillard (2006).
+section).
+
+*** the landmark
+Prinz, Bucher & Marder (2004); Marder & Goaillard (2006).
 
 *** what SCENE inherits
 The /individual-animal discipline/: do not collapse across mice;
